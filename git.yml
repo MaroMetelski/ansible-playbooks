@@ -1,0 +1,30 @@
+---
+- name: Git tools and configuration
+  hosts: localhost
+  become: true
+  tasks:
+    - name: "Get lazygit version"
+      ansible.builtin.shell:
+        cmd: |
+          curl -s "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name": "v\K[^"]*'
+      register: lazygit_version
+
+    - name: "Print lazygit version"
+      ansible.builtin.debug:
+        msg: "lazygit version: {{ lazygit_version.stdout }}"
+
+    - name: "Download lazygit"
+      ansible.builtin.get_url:
+        url: https://github.com/jesseduffield/lazygit/releases/latest/download/lazygit_{{ lazygit_version.stdout }}_Linux_x86_64.tar.gz
+        dest: /tmp/lazygit_{{ lazygit_version.stdout }}.tar.gz
+
+    - name: "Unpack lazygit"
+      ansible.builtin.unarchive:
+        src: /tmp/lazygit_{{ lazygit_version.stdout }}.tar.gz
+        dest: /tmp
+
+    - name: "Install lazygit"
+      ansible.builtin.copy:
+        src: /tmp/lazygit
+        dest: /usr/local/bin/lazygit
+        mode: '0755'
