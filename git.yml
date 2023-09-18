@@ -23,8 +23,15 @@
         src: /tmp/lazygit_{{ lazygit_version.stdout }}.tar.gz
         dest: /tmp
 
+    - name: "Ensure ~/.local/bin directory"
+      become: no
+      ansible.builtin.file:
+        path: ~/.local/bin
+        state: directory
+
     - name: "Install lazygit"
+      become: no
       ansible.builtin.copy:
         src: /tmp/lazygit
-        dest: /usr/local/bin/lazygit
-        mode: '0755'
+        dest: ~/.local/bin/lazygit
+        mode: 0755
