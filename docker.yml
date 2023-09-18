@@ -1,0 +1,36 @@
+---
+- name: Install docker
+  hosts: localhost
+  become: true
+  tasks:
+    - name: "Install dependencies"
+      ansible.builtin.apt:
+        pkg:
+          - ca-certificates
+          - curl
+          - gnupg
+
+    - name: "Add gpg key"
+      ansible.builtin.apt_key:
+        url: https://download.docker.com/linux/debian/gpg
+
+    - name: "Get system codename"
+      ansible.builtin.shell:
+        cmd: |
+          . /etc/os-release
+          echo $VERSION_CODENAME
+      register: version_codename
+
+    - name: "Add docker repository"
+      ansible.builtin.apt_repository:
+        repo: deb https://download.docker.com/linux/debian {{ version_codename.stdout }} stable
+
+    - name: "Update and install docker packages"
+      ansible.builtin.apt:
+        pkg:
+          - docker-ce
+          - docker-ce-cli
+          - containerd.io
+          - docker-buildx-plugin
+          - docker-compose-plugin
+        update_cache: true
