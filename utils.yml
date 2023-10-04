@@ -1,0 +1,8 @@
+---
+- name: Various utilities
+  hosts: localhost
+  become: true
+  tasks:
+    - name: "Install Tilix"
+      ansible.builtin.apt:
+        pkg: tilix
