@@ -1,0 +1,8 @@
+- name: Include Git utilities
+  ansible.builtin.import: git.yml
+
+- name: Include docker
+  ansible.builtin.import: docker.yml
+
+- name: Include other utilities
+  ansible.builtin.import: utils.yml
